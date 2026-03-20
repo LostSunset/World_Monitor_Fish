@@ -1,0 +1,51 @@
+name: Security Report
+description: Report a security vulnerability (non-critical). For critical issues, email security@worldmonitorfish.dev
+title: "[Security]: "
+labels: ["security", "priority:high"]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Critical (RCE, auth bypass, data breach)
+        - High (XSS, SSRF, privilege escalation)
+        - Medium (CSRF, information disclosure)
+        - Low (best practice violation)
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - WorldMonitor (Frontend)
+        - WorldMonitor (API)
+        - WorldMonitor (Relay)
+        - MiroFish (Backend)
+        - MiroFish (Frontend)
+        - Integration Service
+        - Docker / Infrastructure
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Vulnerability Description
+      description: Describe the vulnerability and its potential impact.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Steps
+      description: How to reproduce or verify the vulnerability.
+    validations:
+      required: true
+  - type: textarea
+    id: remediation
+    attributes:
+      label: Suggested Remediation
+      description: How would you recommend fixing this?
+    validations:
+      required: false

@@ -1,0 +1,111 @@
+version: "3.8"
+
+services:
+  # === Shared Infrastructure ===
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  redis-rest:
+    image: hiett/serverless-redis-http:latest
+    ports:
+      - "127.0.0.1:8079:80"
+    environment:
+      SRH_MODE: env
+      SRH_TOKEN: "${REDIS_TOKEN:?REDIS_TOKEN must be set}"
+      SRH_CONNECTION_STRING: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # === WorldMonitor ===
+  worldmonitor:
+    build:
+      context: ./packages/worldmonitor
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      UPSTASH_REDIS_REST_URL: http://redis-rest:80
+      UPSTASH_REDIS_REST_TOKEN: "${REDIS_TOKEN:?REDIS_TOKEN must be set}"
+      RELAY_URL: http://ais-relay:3001
+    env_file:
+      - .env
+    depends_on:
+      redis-rest:
+        condition: service_started
+
+  ais-relay:
+    build:
+      context: ./packages/worldmonitor
+      dockerfile: Dockerfile.relay
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      UPSTASH_REDIS_REST_URL: http://redis-rest:80
+      UPSTASH_REDIS_REST_TOKEN: "${REDIS_TOKEN:?REDIS_TOKEN must be set}"
+      RELAY_SHARED_SECRET: "${RELAY_SHARED_SECRET:-}"
+    env_file:
+      - .env
+    depends_on:
+      redis-rest:
+        condition: service_started
+
+  # === MiroFish ===
+  mirofish-backend:
+    build:
+      context: ./packages/mirofish
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      FLASK_HOST: "0.0.0.0"
+      FLASK_DEBUG: "False"
+      SECRET_KEY: "${SECRET_KEY:?SECRET_KEY must be set}"
+      MIROFISH_API_KEYS: "${INTEGRATION_API_KEYS:-}"
+      MIROFISH_CORS_ORIGINS: "http://localhost:3001,http://mirofish-frontend:3001"
+    env_file:
+      - .env
+    volumes:
+      - mirofish-uploads:/app/backend/uploads
+
+  mirofish-frontend:
+    build:
+      context: ./packages/mirofish/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      VITE_API_BASE_URL: http://mirofish-backend:5001
+    depends_on:
+      - mirofish-backend
+
+  # === Integration Service ===
+  integration-gw:
+    build:
+      context: ./packages/integration
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      WM_API_URL: http://worldmonitor:3000
+      MF_API_URL: http://mirofish-backend:5001
+      REDIS_URL: http://redis-rest:80
+      REDIS_TOKEN: "${REDIS_TOKEN:?REDIS_TOKEN must be set}"
+      INTEGRATION_API_KEYS: "${INTEGRATION_API_KEYS:-}"
+    depends_on:
+      - worldmonitor
+      - mirofish-backend
+      - redis-rest
+
+volumes:
+  redis-data:
+  mirofish-uploads:

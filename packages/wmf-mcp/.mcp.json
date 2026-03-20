@@ -1,0 +1,12 @@
+{
+  "wmf": {
+    "command": "npx",
+    "args": ["tsx", "${CLAUDE_PLUGIN_ROOT}/src/server.ts"],
+    "env": {
+      "WM_API_URL": "http://localhost:3000",
+      "MF_API_URL": "http://localhost:5001",
+      "INTEGRATION_API_URL": "http://localhost:4000",
+      "PROJECT_ROOT": "${CLAUDE_PLUGIN_ROOT}/../.."
+    }
+  }
+}

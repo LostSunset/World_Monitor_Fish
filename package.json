@@ -1,0 +1,23 @@
+{
+  "name": "world-monitor-fish",
+  "version": "1.1.0",
+  "private": true,
+  "description": "WorldMonitor + MiroFish integrated intelligence platform",
+  "workspaces": [
+    "packages/worldmonitor",
+    "packages/mirofish/frontend",
+    "packages/integration"
+  ],
+  "scripts": {
+    "dev": "concurrently -n wm,mf,ig -c blue,green,yellow \"npm run dev:wm\" \"npm run dev:mf\" \"npm run dev:integration\"",
+    "dev:wm": "cd packages/worldmonitor && npm run dev",
+    "dev:mf": "cd packages/mirofish && npm run dev",
+    "dev:integration": "cd packages/integration && npm run dev",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

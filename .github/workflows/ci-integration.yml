@@ -1,0 +1,25 @@
+name: CI - Integration
+
+on:
+  push:
+    branches: [develop, main]
+    paths: ['packages/integration/**']
+  pull_request:
+    branches: [develop, main]
+    paths: ['packages/integration/**']
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        working-directory: packages/integration
+      - run: npx tsc --noEmit
+        working-directory: packages/integration
+      - run: npm test --if-present
+        working-directory: packages/integration

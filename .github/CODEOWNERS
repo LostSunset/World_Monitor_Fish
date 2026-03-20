@@ -1,0 +1,32 @@
+# World Monitor Fish - Code Ownership
+# Each line is a file pattern followed by one or more owners.
+
+# Root config
+package.json                    @team-lead
+docker-compose.yml              @team-devops
+.env.example                    @team-devops
+
+# GitHub & CI/CD
+.github/                        @team-lead
+
+# WorldMonitor
+packages/worldmonitor/src/      @team-frontend @team-backend
+packages/worldmonitor/api/      @team-backend
+packages/worldmonitor/server/   @team-backend
+packages/worldmonitor/scripts/  @team-backend @team-devops
+packages/worldmonitor/proto/    @team-backend
+
+# MiroFish
+packages/mirofish/backend/      @team-ai @team-backend
+packages/mirofish/frontend/     @team-frontend
+packages/mirofish/backend/app/services/   @team-ai
+
+# Integration
+packages/integration/           @team-backend
+
+# Security-sensitive files (require 2 reviewers)
+packages/worldmonitor/api/_cors.js          @team-lead @team-backend
+packages/worldmonitor/api/_api-key.js       @team-lead @team-backend
+packages/worldmonitor/api/mcp-proxy.js      @team-lead @team-backend
+packages/mirofish/backend/app/utils/auth.py @team-lead @team-backend
+packages/mirofish/backend/app/config.py     @team-lead @team-backend

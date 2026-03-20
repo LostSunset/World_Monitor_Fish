@@ -1,0 +1,35 @@
+name: Security Audit
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9:00 UTC
+  workflow_dispatch:
+
+jobs:
+  npm-audit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [packages/worldmonitor, packages/mirofish/frontend, packages/integration]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+        working-directory: ${{ matrix.package }}
+      - run: npm audit --audit-level=high
+        working-directory: ${{ matrix.package }}
+        continue-on-error: true
+
+  pip-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pip-audit
+      - run: pip-audit -r requirements.txt
+        working-directory: packages/mirofish/backend
+        continue-on-error: true
