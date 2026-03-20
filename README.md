@@ -93,7 +93,10 @@ GitHub Actions workflows in `.github/workflows/`:
 - `docker-publish.yml` — Build & push Docker images to GHCR
 - `security-audit.yml` — Dependency security audit
 
-Docker images are published to `ghcr.io/lostsunset/world_monitor_fish`.
+Docker images are published to GHCR per service:
+- `ghcr.io/lostsunset/world_monitor_fish/worldmonitor`
+- `ghcr.io/lostsunset/world_monitor_fish/mirofish`
+- `ghcr.io/lostsunset/world_monitor_fish/integration`
 
 ## License
 

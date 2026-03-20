@@ -11,6 +11,18 @@ jobs:
     permissions:
       contents: read
       packages: write
+    strategy:
+      matrix:
+        include:
+          - service: worldmonitor
+            context: ./packages/worldmonitor
+            dockerfile: ./packages/worldmonitor/Dockerfile
+          - service: mirofish
+            context: ./packages/mirofish
+            dockerfile: ./packages/mirofish/Dockerfile
+          - service: integration
+            context: ./packages/integration
+            dockerfile: ./packages/integration/Dockerfile
     steps:
       - uses: actions/checkout@v4
 
@@ -28,10 +40,11 @@ jobs:
 
       - uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: |
-            ghcr.io/${{ steps.repo.outputs.name }}:latest
-            ghcr.io/${{ steps.repo.outputs.name }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            ghcr.io/${{ steps.repo.outputs.name }}/${{ matrix.service }}:latest
+            ghcr.io/${{ steps.repo.outputs.name }}/${{ matrix.service }}:${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service }}

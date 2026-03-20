@@ -32,7 +32,8 @@ packages/
 
 ### CI/CD
 
-- Docker images published to `ghcr.io/lostsunset/world_monitor_fish`（image tag 必須全小寫）
+- Docker images published to `ghcr.io/lostsunset/world_monitor_fish/{service}`（image tag 必須全小寫）
+  - Services: `worldmonitor`, `mirofish`, `integration`
 - GitHub Actions: `ci-worldmonitor`, `ci-mirofish`, `ci-integration`, `docker-publish`, `security-audit`
 
 ### Development
