@@ -84,6 +84,17 @@ Install the plugin in Claude Code to get direct system control:
 | Operations | `trigger_simulation`, `start_services`, `stop_services`, `restart_service`, `run_tests` |
 | Interactive | `chat_agent`, `chat_report` |
 
+## CI/CD
+
+GitHub Actions workflows in `.github/workflows/`:
+- `ci-worldmonitor.yml` — WorldMonitor lint, build, test
+- `ci-mirofish.yml` — MiroFish backend + frontend CI
+- `ci-integration.yml` — Integration service CI
+- `docker-publish.yml` — Build & push Docker images to GHCR
+- `security-audit.yml` — Dependency security audit
+
+Docker images are published to `ghcr.io/lostsunset/world_monitor_fish`.
+
 ## License
 
 Private — All rights reserved.

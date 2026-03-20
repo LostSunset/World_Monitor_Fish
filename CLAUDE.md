@@ -30,6 +30,11 @@ packages/
 
 **Agent**: `wmf-ops` — 自動化運維 agent（診斷、服務管理、測試）
 
+### CI/CD
+
+- Docker images published to `ghcr.io/lostsunset/world_monitor_fish`（image tag 必須全小寫）
+- GitHub Actions: `ci-worldmonitor`, `ci-mirofish`, `ci-integration`, `docker-publish`, `security-audit`
+
 ### Development
 
 ```bash
