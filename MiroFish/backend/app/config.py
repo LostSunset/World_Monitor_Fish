@@ -4,6 +4,8 @@
 """
 
 import os
+import secrets
+import logging
 from dotenv import load_dotenv
 
 # 加载项目根目录的 .env 文件
@@ -21,8 +23,15 @@ class Config:
     """Flask配置类"""
     
     # Flask配置
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'mirofish-secret-key')
-    DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+    _secret_key = os.environ.get('SECRET_KEY')
+    if not _secret_key:
+        _secret_key = secrets.token_hex(32)
+        logging.getLogger('mirofish.config').warning(
+            "SECRET_KEY not set in environment. A random key has been generated. "
+            "Set SECRET_KEY in your .env file for stable sessions across restarts."
+        )
+    SECRET_KEY = _secret_key
+    DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     
     # JSON配置 - 禁用ASCII转义，让中文直接显示（而不是 \uXXXX 格式）
     JSON_AS_ASCII = False

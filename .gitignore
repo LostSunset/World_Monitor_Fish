@@ -35,6 +35,9 @@ npm-debug.log*
 # Uploads & data
 packages/mirofish/backend/uploads/
 
+# Claude Code local settings
+.claude/
+
 # Secrets
 *.pem
 *.key
